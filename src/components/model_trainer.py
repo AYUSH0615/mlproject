@@ -37,8 +37,6 @@ class ModelTrainer:
         )
             models={
             "Linear Regression":LinearRegression(),
-            "Lasso":Lasso(),
-            "Ridge":Ridge(),
             "K-Neighbors Regressor":KNeighborsRegressor(),
             "Decision Tree":DecisionTreeRegressor(),
             "Random Forrest Regressor":RandomForestRegressor(),
@@ -46,9 +44,45 @@ class ModelTrainer:
              "CatBoosting Regressor":CatBoostRegressor(),
              "XgBoost Regressor":XGBRegressor(),
              "Gradient Regressor":GradientBoostingRegressor() }
+            
+            param={
+
+          "Decision Tree":{
+              'criterion':['squared_error','friedman_mse','absolute_error','poisson'],
+        
+          },
+          "Random Forrest Regressor":{
+              'n_estimators':[8,17,64,30,130,300]
+          },
+          "Gradient Regressor":{
+              'learning_rate':[0.1,.01,.5,.001],
+              'n_estimators':[8,28,49,129,320]
+          },
+          "K-Neighbors Regressor":{
+              'n_neighbors':[5,7,10,11],
+              'weights':['uniform','distance']
+          },
+          "CatBoosting Regressor":{
+              'depth':[6,8,10],
+              'learning_rate':[0.01,0.1,0.5],
+              'iterations':[25,30,80]
+          },
+          "AdaBoost Regressor":{
+              'learning_rate':[.1,0.5,0.01,0.3],
+              'n_estimators':[8,15,30,110,250]
+          },
+          "Linear Regression":{},
+          "XgBoost Regressor":{
+              'learning_rate':[0.01,0.1,0.2],
+              'n_estimators':[50,100,200],
+              'max_depth':[3,5,7]
+          }
+            }
+            
+              
         
             model_report:dict=evaluate_model(X_train=X_train,y_train=y_train,X_test=X_test,
-                                         y_test=y_test,models=models)
+                                         y_test=y_test,models=models,param=param)
         
 
             best_model_score=max(sorted(model_report.values()))
@@ -68,7 +102,7 @@ class ModelTrainer:
                                          
             predicted=best_model.predict(X_test)
             r2_square=r2_score(y_test,predicted)
-            return r2_square
+            return r2_square,best_model_name
     
 
         except Exception as e:
